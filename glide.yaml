@@ -1,0 +1,6 @@
+package: github.com/codegp/game-type-builder
+import:
+- package: github.com/codegp/cloud-persister
+- package: git.apache.org/thrift.git
+  subpackages:
+  - lib/go/thrift
