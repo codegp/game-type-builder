@@ -6,21 +6,22 @@ import (
 	"os"
 	"time"
 
-	"botrunner/api"
-	"botrunner/bot"
-	"botrunner/turninformer"
-	"botrunner/yielder"
+	"teamrunner/api"
+	"teamrunner/bot"
+	"teamrunner/turninformer"
+	"teamrunner/yielder"
+
 	"git.apache.org/thrift.git/lib/go/thrift"
 )
 
-const retryLimit int = 20
+const retryLimit int = 120
 
-var gameRunnerIP string
+var gameRunnerAddr string
 
 const addr = 9000
 
 func init() {
-	gameRunnerIP = os.Getenv("GAME_RUNNER_IP")
+	gameRunnerAddr = "game-runner"
 }
 
 func main() {
@@ -44,19 +45,6 @@ func main() {
 			log.Fatalf("the errz!!! %v", e)
 		}
 	}()
-
-	// botInformerClient, err := newBotInformerClient()
-	// if err != nil {
-	// 	log.Fatalf("Failed to start botInformerClient %v", err)
-	// }
-	//
-	// botID := os.Getenv("BOT_ID")
-	// podIP := os.Getenv("POD_IP")
-	// if botID == "" || podIP == "" {
-	// 	log.Fatalf("BotID and PodIP must be in env:\nbotID: %s\npodIP: %s", bodID, podIP)
-	// }
-
-	// botInformerClient.Started(botID, podIP)
 
 	log.Println("team runner waiting for game to finish...")
 	<-lifeOver
@@ -83,64 +71,54 @@ func getServer(lifeOver chan bool, apiClient *api.APIClient) (*thrift.TSimpleSer
 type TurnInformerHandler struct {
 	lifeOver chan bool
 	api      *api.APIClient
-	yielder  *yielder.Yielder
+	yielders map[int32]*yielder.Yielder
 }
 
 func NewTurnInformerHandler(lifeOver chan bool, apiClient *api.APIClient) *TurnInformerHandler {
 	ti := &TurnInformerHandler{
 		lifeOver: lifeOver,
 		api:      apiClient,
-		yielder:  yielder.NewYielder(),
+		yielders: map[int32]*yielder.Yielder{},
 	}
 
-	go ti.start()
 	return ti
 }
 
-func (turninformer *TurnInformerHandler) StartTurn() error {
-	log.Println("START TURN!")
+func (turninformer *TurnInformerHandler) CreateBot(botID int32) error {
+	log.Println("IM ALIVE! ", botID)
 	// TODO: recover from panics and invoke a timeout
-	turninformer.yielder.WaitForYield()
+	y := yielder.NewYielder()
+	turninformer.yielders[botID] = y
+	go turninformer.start(y)
+	return nil
+}
+
+func (turninformer *TurnInformerHandler) DestroyBot(botID int32) error {
+	log.Println("IM DEAD! ", botID)
+	turninformer.lifeOver <- true
+	return nil
+}
+
+func (turninformer *TurnInformerHandler) StartTurn(botID int32) error {
+	log.Println("START TURN! ", botID)
+	// TODO: recover from panics and invoke a timeout
+	turninformer.yielders[botID].WaitForYield()
 	return nil
 }
 
 func (turninformer *TurnInformerHandler) Destroy() error {
-	log.Println("IM DEAD!")
+	log.Println("WE ALL DEAD!")
 	turninformer.lifeOver <- true
 	return nil
 }
 
-func (turninformer *TurnInformerHandler) start() {
-	turninformer.yielder.WaitForStart()
-	bot.Run(turninformer.api, turninformer.yielder)
-	turninformer.lifeOver <- true
+func (turninformer *TurnInformerHandler) start(y *yielder.Yielder) {
+	y.WaitForStart()
+	bot.Run(turninformer.api, y)
 }
 
-// func newBotInformerClient() (*botstartinformer.BotStartInformerClient, error) {
-// 	transport, err := thrift.NewTSocket(fmt.Sprintf("http://%s:9000", gameRunnerIP))
-// 	if err != nil {
-// 		log.Printf("Error opening socket: %v\n", err)
-// 		return nil, err
-// 	}
-//
-// 	transportFactory := thrift.NewTTransportFactory()
-// 	protocolFactory := thrift.NewTCompactProtocolFactory()
-// 	t := transportFactory.GetTransport(transport)
-//
-// 	retryCount := 0
-// 	for retryCount <= retryLimit {
-// 		if err := t.Open(); err == nil {
-// 			return botstartinformer.NewBotStartInformerClientFactory(t, protocolFactory), nil
-// 		}
-// 		time.Sleep(time.Millisecond * 100 * retryCount)
-// 		retryCount++
-// 	}
-//
-// 	return nil, fmt.Errorf("Failed to start client at port 9000")
-// }
-
 func newAPIClient() (*api.APIClient, error) {
-	transport, err := thrift.NewTSocket(fmt.Sprintf("%s:9000", gameRunnerIP))
+	transport, err := thrift.NewTSocket(fmt.Sprintf("%s:9000", gameRunnerAddr))
 	if err != nil {
 		log.Printf("Error opening socket: %v\n", err)
 		return nil, err
@@ -155,9 +133,10 @@ func newAPIClient() (*api.APIClient, error) {
 		if err = t.Open(); err == nil {
 			return api.NewAPIClientFactory(t, protocolFactory), nil
 		}
-		time.Sleep(time.Millisecond * time.Duration(100*retryCount))
+		log.Printf("Could not connect to %s:9000. Retrying in 1s: %v. ", gameRunnerAddr, err)
+		time.Sleep(time.Millisecond * time.Duration(1000))
 		retryCount++
 	}
 
-	return nil, fmt.Errorf("Failed to start client at %s:9000, err:\n%v", gameRunnerIP, err)
+	return nil, fmt.Errorf("Failed to start client at %s:9000, err:\n%v", gameRunnerAddr, err)
 }

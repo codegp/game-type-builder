@@ -33,6 +33,20 @@ trap cleanup EXIT
 
 cp -r $GOPATH/src/github.com/codegp/game-runner $REPO_ROOT/game-runner
 
+# TEMP
+rm -rf vendor/github.com/codegp
+mkdir -p $REPO_ROOT/vendor/github.com/codegp
+cp -r $GOPATH/src/github.com/codegp/cloud-persister $REPO_ROOT/vendor/github.com/codegp/cloud-persister
+cp -r $GOPATH/src/github.com/codegp/env $REPO_ROOT/vendor/github.com/codegp/env
+cp -r $GOPATH/src/github.com/codegp/job-client $REPO_ROOT/vendor/github.com/codegp/job-client
+cp -r $GOPATH/src/github.com/codegp/game-object-types $REPO_ROOT/vendor/github.com/codegp/game-object-types
+
+mkdir -p $REPO_ROOT/game-runner/vendor/github.com/codegp
+cp -r $GOPATH/src/github.com/codegp/cloud-persister $REPO_ROOT/game-runner/vendor/github.com/codegp/cloud-persister
+cp -r $GOPATH/src/github.com/codegp/env $REPO_ROOT/game-runner/vendor/github.com/codegp/env
+cp -r $GOPATH/src/github.com/codegp/job-client $REPO_ROOT/game-runner/vendor/github.com/codegp/job-client
+cp -r $GOPATH/src/github.com/codegp/game-object-types $REPO_ROOT/game-runner/vendor/github.com/codegp/game-object-types
+
 docker build -t gcr.io/$PROJECT_ID/game-type-builder:$TAG .
 
 if $PUSH; then

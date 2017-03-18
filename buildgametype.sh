@@ -17,6 +17,13 @@ echo "GAME_RUNNER_PATH: $GAME_RUNNER_PATH"
 echo "GAME_RUNNER_PATH_FROM_GOPATH_SRC: $GAME_RUNNER_PATH_FROM_GOPATH_SRC"
 
 echo "Generating thrift files..."
+docker ps
+echo "afterpds"
+ls /
+echo "fo root"
+cd /localstore
+ls
+echo "mo nothing"
 cd $REPO_ROOT/thriftgenerator
 mkdir $REPO_ROOT/thrift
 cp $GAME_RUNNER_PATH/thrift/gameObjects.thrift $REPO_ROOT/thrift/gameObjects.thrift
@@ -58,10 +65,10 @@ echo "Done building sourcemanager"
 
 echo "Building client docker image..."
 cd $REPO_ROOT
-BOT_PATH="botrunner"
+BOT_PATH="teamrunner"
 thrift -r -out $REPO_ROOT/clients/go --gen go:package_prefix=$BOT_PATH/ thrift/ids.thrift
 thrift -r -out $REPO_ROOT/clients/go --gen go:package_prefix=$BOT_PATH/ thrift/api.thrift
 thrift -r -out $REPO_ROOT/clients/go --gen go:package_prefix=$BOT_PATH/ $GAME_RUNNER_PATH/thrift/turnInformer.thrift
 thrift -r -out $REPO_ROOT/clients/go --gen go:package_prefix=$BOT_PATH/ $GAME_RUNNER_PATH/thrift/gameObjects.thrift
-docker build -t gcr.io/$GCLOUD_PROJECT_ID/bot-runner-$GAME_TYPE_ID-go -f clients/go/Dockerfile .
+docker build -t gcr.io/$GCLOUD_PROJECT_ID/team-runner-$GAME_TYPE_ID-go -f clients/go/Dockerfile .
 echo "Done building client docker image."

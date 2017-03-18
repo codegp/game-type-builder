@@ -31,6 +31,11 @@ func main() {
 		log.Fatalf("Failed to get project %d, %v", projID, err)
 	}
 
+	if project.Directory == "" {
+		log.Println("Directory is set, not downloading source.")
+		return
+	}
+
 	for _, filename := range project.FileNames {
 		bytes, err := cp.ReadProjectFile(projID, filename)
 		if err != nil {

@@ -1,18 +1,18 @@
 FROM golang:1.6.2-wheezy
 
-RUN mkdir -p /go/src/botrunner/bot
+RUN mkdir -p /go/src/teamrunner/team
 
-COPY clients/go/botrunner.go /go/src/botrunner/botrunner.go
-COPY clients/go/yielder /go/src/botrunner/yielder
-COPY clients/go/api /go/src/botrunner/api
-COPY clients/go/ids /go/src/botrunner/ids
-COPY clients/go/turninformer /go/src/botrunner/turninformer
-COPY clients/go/gameobjects /go/src/botrunner/gameobjects
-COPY clients/go/runbot.sh /go/src/botrunner/runbot.sh
+COPY clients/go/teamrunner.go /go/src/teamrunner/teamrunner.go
+COPY clients/go/yielder /go/src/teamrunner/yielder
+COPY clients/go/api /go/src/teamrunner/api
+COPY clients/go/ids /go/src/teamrunner/ids
+COPY clients/go/turninformer /go/src/teamrunner/turninformer
+COPY clients/go/gameobjects /go/src/teamrunner/gameobjects
+COPY clients/go/run.sh /go/src/teamrunner/run.sh
 COPY vendor/git.apache.org /go/src/git.apache.org
-COPY sourcemanager/sourcemanager /go/src/botrunner/sourcemanager
+COPY sourcemanager/sourcemanager /go/src/teamrunner/sourcemanager
 
-WORKDIR /go/src/botrunner
+WORKDIR /go/src/teamrunner
 EXPOSE 9000
 
-CMD ["./runbot.sh"]
+CMD ["./run.sh"]

@@ -1,8 +1,8 @@
-FROM local/codegp/builderbase:latest
+FROM gcr.io/codegamingplatform-146701/builderbase
 
 RUN mkdir -p /go/src/github.com/codegp/game-type-builder
-
 COPY vendor/ /go/src/github.com/codegp/game-type-builder/vendor
+
 COPY thriftgenerator/ /go/src/github.com/codegp/game-type-builder/thriftgenerator
 COPY sourcemanager/ /go/src/github.com/codegp/game-type-builder/sourcemanager
 COPY docsreporter/ /go/src/github.com/codegp/game-type-builder/docsreporter

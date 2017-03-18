@@ -27,12 +27,12 @@ def NewAPIClient():
         return NewAPIClient()
 
 
-def NewServer(addr, teamRunnerID, api, gameOverChan):
+def NewServer(addr, teamrunnerID, api, gameOverChan):
     try:
         handler = TurnInformerHandler(api, gameOverChan)
         processor = ti.Processor(handler)
         port = int(addr)
-        host = "teamrunner" + teamRunnerID
+        host = "teamrunner" + teamrunnerID
         transport = TSocket.TServerSocket(host=host,port=port)
         tfactory = TTransport.TBufferedTransportFactory()
         pfactory = TCompactProtocol.TCompactProtocolFactory()
@@ -44,12 +44,12 @@ def NewServer(addr, teamRunnerID, api, gameOverChan):
 
 def main(*args, **kwargs):
     addr = os.environ.get("ADDR")
-    teamRunnerID = os.environ.get("TEAM_RUNNER_ID")
+    teamrunnerID = os.environ.get("TEAM_RUNNER_ID")
 
     apiClient = NewAPIClient()
 
     gameOverChan = goless.chan()
-    server = NewServer(addr, teamRunnerID, apiClient, gameOverChan)
+    server = NewServer(addr, teamrunnerID, apiClient, gameOverChan)
     goless.go(server.serve)
     gameOverChan.recv()
     sys.exit(0)
