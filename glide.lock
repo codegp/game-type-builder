@@ -1,0 +1,104 @@
+hash: a33cc76d98cace2a29ed4383ecd79ba928113ec3a441388e9daff7c7be5c3c79
+updated: 2017-03-18T12:13:09.929060495-06:00
+imports:
+- name: cloud.google.com/go
+  version: d3ab0ba5bd871165fd59d6779773139bf99c220d
+  subpackages:
+  - datastore
+  - storage
+  - internal/fields
+  - internal/version
+  - internal
+  - internal/optional
+  - internal/atomiccache
+  - compute/metadata
+- name: git.apache.org/thrift.git
+  version: 6582757752e62efea3f9786dddf0260efaa1f450
+  subpackages:
+  - lib/go/thrift
+- name: github.com/codegp/cloud-persister
+  version: e157a398c9b57464776535134427910223525b77
+  subpackages:
+  - models
+- name: github.com/codegp/env
+  version: 1af9748c81f32e1c4910c19fe703826b0c187f9d
+- name: github.com/codegp/game-object-types
+  version: 2a3c7fd5f280683c6c4e56f04ddbe202c4ccdb6e
+  subpackages:
+  - types
+- name: github.com/golang/protobuf
+  version: c9c7427a2a70d2eb3bafa0ab2dc163e45f143317
+  subpackages:
+  - proto
+  - ptypes/timestamp
+  - ptypes/wrappers
+  - ptypes/struct
+  - protoc-gen-go/descriptor
+- name: github.com/googleapis/gax-go
+  version: 8c5154c0fe5bf18cf649634d4c6df50897a32751
+- name: golang.org/x/net
+  version: a6577fac2d73be281a500b310739095313165611
+  subpackages:
+  - context
+  - http2
+  - trace
+  - context/ctxhttp
+  - http2/hpack
+  - idna
+  - lex/httplex
+  - internal/timeseries
+- name: golang.org/x/oauth2
+  version: 30fcca6531eb4bb278493c9fb299295b3b145934
+  subpackages:
+  - google
+  - internal
+  - jws
+  - jwt
+- name: google.golang.org/api
+  version: cbeb0ff89adddeef6a3287fa481dcca2b596ed36
+  subpackages:
+  - iterator
+  - option
+  - transport
+  - googleapi
+  - storage/v1
+  - internal
+  - googleapi/transport
+  - googleapi/internal/uritemplates
+  - gensupport
+- name: google.golang.org/appengine
+  version: b79c28f0197795b4050bfcd7c4c2209136c594b1
+  subpackages:
+  - socket
+  - urlfetch
+  - internal
+  - internal/socket
+  - internal/urlfetch
+  - internal/app_identity
+  - internal/modules
+  - internal/base
+  - internal/datastore
+  - internal/log
+  - internal/remote_api
+- name: google.golang.org/genproto
+  version: de9f5e90fe9b278809363f08c2072d2f2a429de7
+  subpackages:
+  - googleapis/datastore/v1
+  - googleapis/type/latlng
+  - googleapis/api/annotations
+- name: google.golang.org/grpc
+  version: cdee119ee21e61eef7093a41ba148fa83585e143
+  subpackages:
+  - codes
+  - metadata
+  - credentials
+  - credentials/oauth
+  - grpclog
+  - internal
+  - keepalive
+  - naming
+  - peer
+  - stats
+  - tap
+  - transport
+testImports: []

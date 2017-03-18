@@ -4,3 +4,5 @@ import:
 - package: git.apache.org/thrift.git
   subpackages:
   - lib/go/thrift
+excludeDirs:
+  - clients/go
